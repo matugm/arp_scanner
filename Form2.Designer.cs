@@ -116,6 +116,7 @@
             this.textBox2.Size = new System.Drawing.Size(48, 20);
             this.textBox2.TabIndex = 8;
             this.textBox2.Text = "64";
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // label4
             // 

@@ -16,15 +16,15 @@ namespace WindowsFormsApplication1
                 comboBox1.Items.Add(device.Description);
             }
 
-            comboBox1.SelectedIndexChanged += ComboBox1_SelectedIndexChanged;
             comboBox1.SelectedIndex = ArpScanner.deviceIndex;
+            comboBox1.SelectedIndexChanged += ComboBox1_SelectedIndexChanged;
         }
 
         private void ComboBox1_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            ComboBox comboBox = (ComboBox)sender;
+            ComboBox comboBox   = (ComboBox)sender;
             string selectedItem = (string)comboBox.SelectedItem;
-            int selectedIndex = comboBox1.SelectedIndex;
+            int selectedIndex   = comboBox1.SelectedIndex;
 
             var devices = ArpScanner.getDeviceList();
             var selectedDevice = devices[selectedIndex];
@@ -38,7 +38,7 @@ namespace WindowsFormsApplication1
             }
 
             ArpScanner.deviceIndex = selectedIndex;
-            ArpScanner.deviceAddr = comboBox2.Items[1].ToString();
+            ArpScanner.deviceAddr  = comboBox2.Items[1].ToString();
             comboBox2.SelectedIndex = 1;
         }
 
@@ -46,6 +46,20 @@ namespace WindowsFormsApplication1
         private void button1_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            string text = textBox.Text;
+            int lastIP  = 0;
+
+            bool ok = Int32.TryParse(text, out lastIP);
+
+            if (ok && lastIP > 0 && lastIP < 255)
+            {
+                ArpScanner.maxRange = lastIP;
+            }
         }
     }
 }

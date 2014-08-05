@@ -14,11 +14,13 @@ namespace WindowsFormsApplication1
     {
 
         static public string deviceAddr = "";
-        static public int deviceIndex = 0;
+        static public int deviceIndex   = 0;
         static public bool scanRunning  = false;
         static public Hashtable threads = new Hashtable();
         static public int scanDelay = 1200000; // 1.2 sec
-        private int maxRange = 64; // Default to 0-64 range
+        static public int maxRange = 64; // Default to 0-64 range
+
+        static private LibPcapLiveDevice device = null;
 
         public static LibPcapLiveDeviceList getDeviceList()
         {
@@ -62,6 +64,7 @@ namespace WindowsFormsApplication1
                     MessageBox.Show(ip + " stopped responding: " + e.Message);
                     return;
                 }
+
                 System.Threading.Thread.Sleep(5000); // 5 sec
             }
 
@@ -70,15 +73,25 @@ namespace WindowsFormsApplication1
 
         public string scanHost(string host)
         {
+            // Parse target IP addr
+
             LibPcapLiveDevice device = getDevice();
-            IPAddress ip = IPAddress.Parse(host);
+            IPAddress targetIP = null;
+
+            bool ok = IPAddress.TryParse(host, out targetIP);
+
+            if (!ok)
+            {
+                Console.WriteLine("Invalid IP.");
+                return "fail";
+            }
 
             // Create a new ARP resolver
             ARP arp = new ARP(device);
             arp.Timeout = new System.TimeSpan(scanDelay); // 100ms
 
             // Enviar ARP
-            var resolvedMacAddress = arp.Resolve(ip);
+            var resolvedMacAddress = arp.Resolve(targetIP);
 
             if (resolvedMacAddress == null)
             {
@@ -87,7 +100,8 @@ namespace WindowsFormsApplication1
             else
             {
                 string fmac = formatMac(resolvedMacAddress);
-                Console.WriteLine(ip + " is at: " + fmac);
+                Console.WriteLine(targetIP + " is at: " + fmac);
+
                 return fmac;
             }
 
