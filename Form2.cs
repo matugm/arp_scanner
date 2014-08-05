@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using SharpPcap.LibPcap;
 
 namespace WindowsFormsApplication1
 {
@@ -12,23 +13,19 @@ namespace WindowsFormsApplication1
 
             foreach (var device in ArpScanner.getDeviceList())
             {
-                Console.WriteLine(device.Description);
+                //Console.WriteLine(device.Description);
                 comboBox1.Items.Add(device.Description);
             }
 
             comboBox1.SelectedIndex = ArpScanner.deviceIndex;
             comboBox1.SelectedIndexChanged += ComboBox1_SelectedIndexChanged;
+
+            var selectedDevice = getDeviceFromIndex(ArpScanner.deviceIndex);
+            populateDeviceIPAddrs(selectedDevice);
         }
 
-        private void ComboBox1_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void populateDeviceIPAddrs(LibPcapLiveDevice selectedDevice)
         {
-            ComboBox comboBox   = (ComboBox)sender;
-            string selectedItem = (string)comboBox.SelectedItem;
-            int selectedIndex   = comboBox1.SelectedIndex;
-
-            var devices = ArpScanner.getDeviceList();
-            var selectedDevice = devices[selectedIndex];
-
             comboBox2.Items.Clear();
             comboBox2.ResetText();
 
@@ -37,9 +34,28 @@ namespace WindowsFormsApplication1
                 comboBox2.Items.Add(selectedDevice.Addresses.ElementAt(i).Addr);
             }
 
+            comboBox2.SelectedIndex = 0;
+        }
+
+        private void ComboBox1_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            ComboBox comboBox   = (ComboBox)sender;
+            string selectedItem = (string)comboBox.SelectedItem;
+            int selectedIndex   = comboBox1.SelectedIndex;
+
+            var selectedDevice = getDeviceFromIndex(selectedIndex);
+
+            populateDeviceIPAddrs(selectedDevice);
+
             ArpScanner.deviceIndex = selectedIndex;
-            ArpScanner.deviceAddr  = comboBox2.Items[1].ToString();
-            comboBox2.SelectedIndex = 1;
+            ArpScanner.deviceAddr  = comboBox2.Items[0].ToString();
+        }
+
+        private static LibPcapLiveDevice getDeviceFromIndex(int selectedIndex)
+        {
+            var devices = ArpScanner.getDeviceList();
+            var selectedDevice = devices[selectedIndex];
+            return selectedDevice;
         }
 
 
