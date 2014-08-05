@@ -127,7 +127,7 @@ namespace WindowsFormsApplication1
                 if (results != "fail")
                     form.updateList(ip, results);
 
-                if (i % 25 == 0)
+                if (i % (maxRange / 10) == 0)
                     form.updateProgress();
             }
 
