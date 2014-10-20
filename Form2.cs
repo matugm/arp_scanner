@@ -35,6 +35,7 @@ namespace WindowsFormsApplication1
             }
 
             comboBox2.SelectedIndex = 0;
+            ArpScanner.deviceAddr = comboBox2.Items[0].ToString();
         }
 
         private void ComboBox1_SelectedIndexChanged(object sender, System.EventArgs e)

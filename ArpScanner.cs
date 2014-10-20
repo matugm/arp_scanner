@@ -20,8 +20,6 @@ namespace WindowsFormsApplication1
         static public int scanDelay = 1200000; // 1.2 sec
         static public int maxRange = 64; // Default to 0-64 range
 
-        static private LibPcapLiveDevice device = null;
-
         public static LibPcapLiveDeviceList getDeviceList()
         {
             // Retrieve the device list
@@ -136,6 +134,7 @@ namespace WindowsFormsApplication1
             scanRunning = false;
 
         }
+
         private static string formatMac(System.Net.NetworkInformation.PhysicalAddress resolvedMacAddress)
         {
             string m = resolvedMacAddress.ToString();
